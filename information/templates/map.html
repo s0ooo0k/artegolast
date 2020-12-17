@@ -1,0 +1,227 @@
+<!-- event page-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+      <title>ArtEgo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="preconnect" href="https://fonts.gstatic.com">
+      <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Song+Myung&display=swap" rel="stylesheet">
+      <style>
+       body{background-color: #DAD9D9;color: #365264;font-family: "Song Myung";}
+        header{text-align:center;font-size:50px;font-family:"Lobster", bold;padding:20px;}
+        nav{padding:5px;overflow:hidden;text-align:right;}
+        nav a{font-size:15px;display:block;color:#365264;text-decoration:none;}
+        nav li{list-style:none;display:inline-block;padding:5px;}
+        h1{font-family: "Song Myung"; font-size: 36px; font-weight: lighter;}
+        h2{font-family: "Song Myung"; font-size: 36px; font-weight: lighter;}
+        p{font-size:20px;}
+    
+        .wrapper{width: 1000px;margin: 20px auto;text-align: left;border:none;}
+        .button{color: #365264;background-color:#DAD9D9;border:0;outline:0;cursor: pointer; font-family: "Song Myung";}
+    
+      #event-container{padding:30px;}
+      .poster-container {background-color:black;position: relative; width: 400px;height:600px;}
+      .dot-container{text-align:center; width:400px};
+      .poster {display: none;}
+      .poster img{max-width:100%; max-height:100%;}
+      .prev, .next {cursor: pointer;position: absolute;top: 50%;width: auto;padding: 16px;
+        margin-top: -22px;color: white;font-weight: bold;font-size: 18px;transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;user-select: none;}
+      .next {right: 0;border-radius: 3px 0 0 3px;}
+      .prev:hover, .next:hover {background-color: rgba(0,0,0,0.8);}
+      .text {color: #f2f2f2;font-size: 15px;padding: 8px 12px;position: absolute;bottom: 8px;width: 100%;text-align: center;}
+      .numbertext {color: #f2f2f2;padding: 8px 12px;position: absolute;top: 0;}
+      .dot {cursor: pointer;height: 15px;width: 15px;margin: 0 2px;background-color: #bbb;
+        border-radius: 50%;display: inline-block;transition: background-color 0.6s ease;}
+      .active, .dot:hover {background-color: #717171;}
+      .fade {
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 1.5s;
+        animation-name: fade;
+        animation-duration: 1.5s;
+      }
+
+      .wrap {position: absolute;left: 0;bottom: 40px;width: 288px;height: 132px;margin-left: -144px;text-align: left;overflow: hidden;font-size: 12px;font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;line-height: 1.5;}
+    .wrap * {padding: 0;margin: 0;}
+    .wrap .info {width: 286px;height: 120px;border-radius: 5px;border-bottom: 2px solid #ccc;border-right: 1px solid #ccc;overflow: hidden;background: #fff;}
+    .wrap .info:nth-child(1) {border: 0;box-shadow: 0px 1px 2px #888;}
+    .info .title {padding: 5px 0 0 10px;height: 30px;background: #eee;border-bottom: 1px solid #ddd;font-size: 18px;font-weight: bold;}
+    .info .close {position: absolute;top: 10px;right: 10px;color: #888;width: 17px;height: 17px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');}
+    .info .close:hover {cursor: pointer;}
+    .info .body {position: relative;overflow: hidden;}
+    .info .desc {position: relative;margin: 13px 0 0 90px;height: 75px;}
+    .desc .ellipsis {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    .desc .jibun {font-size: 11px;color: #888;margin-top: -2px;}
+    .info .img {position: absolute;top: 6px;left: 5px;width: 73px;height: 71px;border: 1px solid #ddd;color: #888;overflow: hidden;}
+    .info:after {content: '';position: absolute;margin-left: -12px;left: 50%;bottom: 0;width: 22px;height: 12px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+    .info .link {color: #5085BB;}
+
+      .goods-container {position:relative; width: 1000px;}
+
+      @-webkit-keyframes fade {
+        from {opacity: .4}
+        to {opacity: 1}
+      }
+      @keyframes fade {
+        from {opacity: .4}
+        to {opacity: 1}
+      }
+      @media only screen and (max-width: 300px) {
+        .prev, .next,.text {font-size: 11px}
+      }
+    </style>
+  </head>
+  <body>
+    <section id="logged-out-main-container">
+      <header style="font-family:Lobster; font-size:80px;">ArtEgo</header>
+    </section>
+    <!--fixed UI until **---------------------------------------------->
+    <div class = "wrapper" id = "eventPage">
+      <section id = "menu-container">
+        <nav>
+          <ul>
+            <li><a href="{%url 'info' %}"><i class="fa fa-fw fa-home"></i>HOME</a></li>
+            <li><a href="{% url 'event' %}"><i class="fa fa-fw fa-star"></i>EVENT</a></li>
+            <li><a href="{% url 'calendar' %}"><i class="fa fa-fw fa-calendar"></i>MY CALENDAR</a></li>
+            <li><a href="{% url 'account:logout' %}"><i class="fa fa-fw fa-user"></i>LOG OUT</a></li>
+          </ul>
+        </nav>
+        <!--Logo-->
+        <div id="map" style="width:1000px; height:600px;"></div>
+
+        <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=30e9ee64fe1353ebbc462a115b57b9bd"></script>
+        <script>
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = { 
+                center: new kakao.maps.LatLng(37.507592, 127.060578), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+        
+        var map = new kakao.maps.Map(mapContainer, mapOption); 
+
+        var positions=[
+            {
+                content:'<div class="wrap">' + 
+            '<div class="info">' + 
+            '<div class="title">' + 
+            '거리, 영웅, 예술' + 
+            '<div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '</div>' + 
+            '<div class="body">' + 
+            '<div class="img">' +
+            '<img src="https://www.lottemuseum.com/attach//Exhabition/2020/03/02_Exhibition_mobile_690x700.jpg" width="73" height="70">' +
+            '</div>' + 
+            '<div class="desc">' + 
+            '<div class="ellipsis">롯데뮤지엄</div>' + 
+            '<div class="jibun ellipsis">서울 송파구 올림픽로 300</div>' + 
+            '<div><a href="https://www.lottemuseum.com/" target="_blank" class="link">홈페이지</a></div>' + 
+            '</div>' + 
+            '</div>' + 
+            '</div>' +    
+            '</div>',
+                latlng: new kakao.maps.LatLng(37.512505, 127.102295)
+            },
+            {
+                content:'<div class="wrap">' + 
+            '<div class="info">' + 
+            '<div class="title">' + 
+            'teamLab: LIFE' + 
+            '<div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '</div>' + 
+            '<div class="body">' + 
+            '<div class="img">' +
+            '<img src="https://borderless.teamlab.art/images/pc-l/14780" width="73" height="70">' +
+            '</div>' + 
+            '<div class="desc">' + 
+            '<div class="ellipsis">동대문디자인플라자:DDP</div>' + 
+            '<div class="jibun ellipsis">대한민국 서울특별시 중구 을지로 281</div>' + 
+            '<div><a href="https://www.teamlab.art/ko/e/ddp/" target="_blank" class="link">홈페이지</a></div>' + 
+            '</div>' + 
+            '</div>' + 
+            '</div>' +    
+            '</div>',
+                latlng: new kakao.maps.LatLng(37.567028, 127.010254)
+            },
+            {
+                content:'<div class="wrap">' + 
+            '<div class="info">' + 
+            '<div class="title">' + 
+            '앙리 마티스 특별전' + 
+            '<div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+            '</div>' + 
+            '<div class="body">' + 
+            '<div class="img">' +
+            '<img src="https://lh3.googleusercontent.com/proxy/H6FptKrboV_DJhFtWjAFplVcE3YD0aqv31beB6FbhuzitkjIoS03r-rWjQQjAFesUzRNvgOgN7cNMixPNbTmTIVMPBOefVqn9Q8HW7bA7RtEk-OzZ7jYydik7Sg60sq5B5r8WFsye9RpZ_1UifK2eFC91L4Ld-QlD3p9RKtwCJSRxjphhcVv0WPTjG_yGqsu" width="73" height="70">' +
+            '</div>' + 
+            '<div class="desc">' + 
+            '<div class="ellipsis">마이아트뮤지엄</div>' + 
+            '<div class="jibun ellipsis">서울특별시 강남구 대치동 테헤란로 518</div>' + 
+            '<div><a href="http://myartmuseum.co.kr/" target="_blank" class="link">홈페이지</a></div>' + 
+            '</div>' + 
+            '</div>' + 
+            '</div>' +    
+            '</div>',
+                latlng: new kakao.maps.LatLng(37.507592, 127.060578)
+            }
+        ];
+
+        for(var i=0; i<positions.length; i++){
+            var marker=new kakao.maps.Marker({
+                map: map,
+                position: positions[i].latlng
+            });
+            
+            var overlay = new kakao.maps.CustomOverlay({
+                content: positions[i].content,
+                map: map,
+                position: marker.getPosition()
+            });
+
+            kakao.maps.event.addListener(marker, 'click', function () {
+                 overlay.setMap(map);
+            });       
+            function closeOverlay(){
+            overlay.setMap(null);
+        }           
+        }
+
+        function closeOverlay(){
+            overlay.setMap(null);
+        }
+
+
+        // var content='<div class="wrap">' + 
+        //     '<div class="info">' + 
+        //     '<div class="title">' + 
+        //     '거리, 영웅, 예술' + 
+        //     '<div class="close" onclick="closeOverlay()" title="닫기"></div>' + 
+        //     '</div>' + 
+        //     '<div class="body">' + 
+        //     '<div class="img">' +
+        //     '<img src="https://www.lottemuseum.com/attach//Exhabition/2020/03/02_Exhibition_mobile_690x700.jpg" width="73" height="70">' +
+        //     '</div>' + 
+        //     '<div class="desc">' + 
+        //     '<div class="ellipsis">롯데뮤지엄</div>' + 
+        //     '<div class="jibun ellipsis">서울 송파구 올림픽로 300</div>' + 
+        //     '<div><a href="https://www.lottemuseum.com/" target="_blank" class="link">홈페이지</a></div>' + 
+        //     '</div>' + 
+        //     '</div>' + 
+        //     '</div>' +    
+        //     '</div>';
+
+        
+
+        // kakao.maps.event.addListener(marker, 'click', function () {
+        //     overlay.setMap(map);
+        // });
+
+        // function closeOverlay(){
+        //     overlay.setMap(null);
+        // }
+    </script>
+  </body>
+</html>
+
+
